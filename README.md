@@ -44,8 +44,54 @@ We use this categorical data encoding technique when the features are nominal(do
 • Yeojohnson method
 
 # CODING AND OUTPUT:
-       # INCLUDE YOUR CODING AND OUTPUT SCREENSHOTS HERE
-# RESULT:
-       # INCLUDE YOUR RESULT HERE
+```
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder, StandardScaler, PowerTransformer
+from scipy.stats import boxcox
+data = pd.read_csv('D:\Data_to_Transform.csv')
+print(data.head())
 
-       
+# Handle Missing Values (Fill numeric columns with mean)
+data.fillna(data.mean(numeric_only=True), inplace=True)
+# Select a suitable numeric column for transformation
+numeric_column = data.select_dtypes(include=np.number).columns[0]
+print(f"\nColumn Selected for Transformation: {numeric_column}")
+
+# Keep only positive values for log and boxcox
+positive_data = data[data[numeric_column] > 0].copy()
+
+# Log Transformation
+positive_data['Log_Transform'] = np.log(positive_data[numeric_column])
+data.head()
+
+# Reciprocal Transformation
+positive_data['Reciprocal_Transform'] = 1 / positive_data[numeric_column]
+data.head()
+
+# Square Root Transformation
+positive_data['Sqrt_Transform'] = np.sqrt(positive_data[numeric_column])
+data.head()
+
+# Square Transformation
+positive_data['Square_Transform'] = np.square(positive_data[numeric_column])
+data.head()
+
+# Box-Cox Transformation (only positive values)
+positive_data['BoxCox_Transform'], lambda_value = boxcox(positive_data[numeric_column])
+data.head()
+
+# Yeo-Johnson Transformation (works with zero/negative values)
+pt = PowerTransformer(method='yeo-johnson')
+data.head()
+
+# Save the transformed dataset
+positive_data.to_csv('Transformed_Positive_Data.csv', index=False)
+data.to_csv('Transformed_Full_Data.csv', index=False)
+print(positive_data.head())
+```
+<img width="795" height="433" alt="image" src="https://github.com/user-attachments/assets/c88769a3-69d7-4c1b-a681-d82b461f17d9" />
+
+
+# RESULT:
+Thus, the given data and perform Feature Encoding and Transformation process and save the data to a file has been completed successfully.
